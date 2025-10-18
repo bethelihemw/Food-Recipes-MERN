@@ -13,10 +13,10 @@ app.use(express.json())
 
 app.use(cors())
 
-app.get('/', (req , res) => {
-    res.json({message: "hello"})
-})
-
+// app.get('/', (req , res) => {
+//     res.json({message: "hello"})
+// })
+app.use('/',require("./routes/user"))
 
 // app.use("/recipe", require("./routes/recipe"))
 app.use("/recipe" , require("./routes/recipes"))
