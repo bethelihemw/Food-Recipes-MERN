@@ -3,9 +3,12 @@ import Sausage from '../assets/Sausage.jpg';
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 import Recipeitems from '../components/Recipeitems';
+import{ useNavigate} from 'react-router-dom'
+
 
 
 export default function Home(){
+  const navigate = useNavigate()
   return (
     <> 
     
@@ -14,7 +17,8 @@ export default function Home(){
           <h2>Food Recipe</h2>
           <h5>Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga incidunt consectetur, in maxime quisquam quam quis dolor, mollitia cupiditate earum a voluptas eveniet perspiciatis quae nobis voluptatem ipsum obcaecati impedit.
           </h5>
-          <button>share your recipe</button>
+          <button onClick={() => navigate('/addRecipe')}>Share your recipe</button>
+
           
         </div>
         <div className='right'>

@@ -1,5 +1,6 @@
 import React from 'react';
 import './App.css';
+import AddRecipe from './pages/AddRecipe';
 import {createBrowserRouter, RouterProvider} from 'react-router-dom'
 import Home from './pages/Home';
 import MainNavigation from './components/MainNavigation';
@@ -16,7 +17,13 @@ const getAllRecipes = async()=> {
 
 
 const router = createBrowserRouter([
-  {path:"/", element:<MainNavigation/>, children:[{path:"/", element: <Home/>, loader: getAllRecipes}]},])
+  {path:"/", element:<MainNavigation/>, children:
+    [{path:"/", element: <Home/>, loader: getAllRecipes},
+      {path:"/myRecipe", element:<Home/>},
+      {path:"/favRecipe", element:<Home/>},
+      { path: "/addRecipe", element: <AddRecipe /> }
+    ]},])
+
 
 export default function App(){
   return (
