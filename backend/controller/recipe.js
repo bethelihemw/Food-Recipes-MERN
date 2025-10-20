@@ -1,79 +1,178 @@
-// const { get } = require("../routes/Recipe")
-const Recipes = require("../models/recipeSchema")
+const Recipes=require("../models/recipeSchema")
 const multer  = require('multer')
+
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, './public/images')
+    },
+    filename: function (req, file, cb) {
+      const filename = Date.now() + '-' + file.fieldname
+      cb(null, filename)
+    }
+  })
+  
+  const upload = multer({ storage: storage })
+
+const getRecipes=async(req,res)=>{
+    const recipes=await Recipes.find()
+    return res.json(recipes)
+}
+
+const getRecipe=async(req,res)=>{
+    const recipe=await Recipes.findById(req.params.id)
+    res.json(recipe)
+}
+
+const addRecipe=async(req,res)=>{
+    console.log(req.user)
+    const {title,ingredients,instructions,time}=req.body 
+
+    if(!title || !ingredients || !instructions)
+    {
+        res.json({message:"Required fields can't be empty"})
+    }
+
+    // const newRecipe=await Recipes.create({
+    //     title,ingredients,instructions,time,coverImage:req.file.filename,
+    //     createdBy:req.user._id
+    // })
+    try {
+    const newRecipe = await Recipes.create({
+      title,
+      ingredients,
+      instructions,
+      time,
+      coverImage: req.file.filename,
+      createdBy: req.user._id, // ✅ add this
+    });
+
+    res.json(newRecipe);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Error creating recipe" });
+  }
+};
+//    return res.json(newRecipe)
+
+
+const editRecipe=async(req,res)=>{
+    const {title,ingredients,instructions,time}=req.body 
+    let recipe=await Recipes.findById(req.params.id)
+
+    try{
+        if(recipe){
+            let coverImage=req.file?.filename ? req.file?.filename : recipe.coverImage
+            await Recipes.findByIdAndUpdate(req.params.id,{...req.body,coverImage},{new:true})
+            res.json({title,ingredients,instructions,time})
+        }
+    }
+    catch(err){
+        return res.status(404).json({message:err})
+    }
+    
+}
+const deleteRecipe=async(req,res)=>{
+    try{
+        await Recipes.deleteOne({_id:req.params.id})
+        res.json({status:"ok"})
+    }
+    catch(err){
+        return res.status(400).json({message:"error"})
+    }
+}
+
+module.exports={getRecipes,getRecipe,addRecipe,editRecipe,deleteRecipe,upload}
+
+
+
+
+// const Recipes = require("../models/recipeSchema")
+// const multer  = require('multer')
 
 // const storage = multer.diskStorage({
 //   destination: function (req, file, cb) {
-//     cb(null, '../public/images')
+//     cb(null, './public/images')
 //   },
 //   filename: function (req, file, cb) {
-//     const filename = Date.now() + '-' + file.filename
+//     const filename = Date.now() + '-' + file.fieldname
 //     cb(null, filename )
 //   }
 // })
 
 // const upload = multer({storage: storage})
 
-const path = require('path');
-const fs = require('fs');
+
+// const getRecipe = async(req , res) => {
+//     const recipe = await Recipes.findById(req.params.id)
+//     res.json(recipe)
+// }
+
+// const getRecipes =async(req , res) => {
+//     const recip = await Recipes.find()
+//     return res.json(recip)
+// }
+
+// const addRecipe = async(req , res) => {
+//     console.log(req.file)
+//     const {title, ingredients, instructions, time} = req.body
+
+//     if(!title || !ingredients || !instructions){
+//         return res.json({message:"Required cant be empty"} )
+//     }
+//     if(!req.file){
+//         return res.status(400).json({message:"Recipe image is required"})
+//     }
+//     const newRecipe = await Recipes.create({
+//         title,ingredients,instructions,time, coverImage:req.file.filename
+//     })
+//     return res.json(newRecipe)
+// }
+
+// const editRecipe = async(req , res) => {
+//     const {title, ingredients, instructions, time} = req.body
+//     let recipe = await Recipes.findById(req.params.id)
+//     try{
+//         if(recipe){
+//             let coverImage=req.file?.filename ? req.file?.filename : recipe.coverImage
+//             await Recipes.findByIdAndUpdate(req.params.id, req.body,{new:true})
+//             res.json({title, ingredients, instructions, time})
+//         }
+//     }catch(err){
+//         return res.status(404).json({message: "error in fetching the item..."})
+//     }
+// }
+// const deleteRecipe = async(req , res) => {
+//     try{
+//         await Recipes.deleteOne({_id:req.params.id})
+//         res.json({status:"ok"})
+//     }
+//     catch(err){
+//         return res.status(400).json({message:"error"})
+//     }
+// }
+
+// module.exports = { getRecipe ,getRecipes, editRecipe, deleteRecipe ,addRecipe,upload}
+
+
+
+// const path = require('path');
+// const fs = require('fs');
 
 // Ensure the images directory exists
-const imagesPath = path.join(__dirname, '../public/images');
-if (!fs.existsSync(imagesPath)) {
-  fs.mkdirSync(imagesPath, { recursive: true });
-}
+// const imagesPath = path.join(__dirname, '../public/images');
+// if (!fs.existsSync(imagesPath)) {
+//   fs.mkdirSync(imagesPath, { recursive: true });
+// }
 
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null,  '../public/images');
-  },
-  filename: function (req, file, cb) {
-    const filename = Date.now() + '-' + file.originalname; // ✅ fixed here
-    cb(null, filename);
-  },
-});
+// const storage = multer.diskStorage({
+//   destination: function (req, file, cb) {
+//     cb(null,  '../public/images');
+//   },
+//   filename: function (req, file, cb) {
+//     const filename = Date.now() + '-' + file.originalname; // ✅ fixed here
+//     cb(null, filename);
+//   },
+// });
 
-const upload = multer({ storage });
-
-const getRecipe = async(req , res) => {
-    const recipe = await Recipes.findById(req.params.id)
-    res.json(recipe)
-}
-
-const getRecipes =async(req , res) => {
-    const recip = await Recipes.find()
-    return res.json(recip)
-}
-
-const addRecipe = async(req , res) => {
-    const {title, ingredients, instructions, time} = req.body
-
-    if(!title || !ingredients || !instructions){
-        res.json({message:"Required cant be empty"} )
-    }
-
-    const newRecipe = await Recipes.create({
-        title,ingredients,instructions,time, coverImage:req.file.filename
-    })
-    return res.json(newRecipe)
-    // res.json({message: "hello"})
-}
-
-const editRecipe = async(req , res) => {
-    const {title, ingredients, instructions, time} = req.body
-    let recipe = await Recipes.findById(req.params.id)
-    try{
-        if(recipe){
-            await Recipes.findByIdAndUpdate(req.params.id, req.body,{new:true})
-            res.json({title, ingredients, instructions, time})
-        }
-    }catch(err){
-        return res.status(404).json({message: "error in fetching the item..."})
-    }
-}
-const deleteRecipe = (req , res) => {
-    res.json({message: "hello"})
-}
-
-module.exports = { getRecipe ,getRecipes, editRecipe, deleteRecipe ,addRecipe,upload}
+// const upload = multer({ storage });

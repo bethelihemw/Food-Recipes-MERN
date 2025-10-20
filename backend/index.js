@@ -14,6 +14,7 @@ connectDb()
 app.use(express.json())
 
 app.use(cors())
+app.use(express.static("public"))
 
 // app.get('/', (req , res) => {
 //     res.json({message: "hello"})
@@ -24,7 +25,7 @@ app.use('/',require("./routes/user"))
 app.use("/recipe" , require("./routes/recipes"))
 
 app.listen(PORT, (err)=> {
-    console.log(`APP IS LISTENING ON PORT ${PORT} `)
+    console.log( `APP IS LISTENING ON PORT ${PORT}`)
 })
 
 
