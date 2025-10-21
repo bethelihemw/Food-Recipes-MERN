@@ -25,17 +25,13 @@ const getRecipe=async(req,res)=>{
 
 const addRecipe=async(req,res)=>{
     console.log(req.user)
+  
     const {title,ingredients,instructions,time}=req.body 
 
     if(!title || !ingredients || !instructions)
     {
         res.json({message:"Required fields can't be empty"})
     }
-
-    // const newRecipe=await Recipes.create({
-    //     title,ingredients,instructions,time,coverImage:req.file.filename,
-    //     createdBy:req.user._id
-    // })
     try {
     const newRecipe = await Recipes.create({
       title,
@@ -43,7 +39,7 @@ const addRecipe=async(req,res)=>{
       instructions,
       time,
       coverImage: req.file.filename,
-      createdBy: req.user._id, // ✅ add this
+      createdBy: req.user.id, 
     });
 
     res.json(newRecipe);
@@ -62,7 +58,7 @@ const editRecipe=async(req,res)=>{
     try{
         if(recipe){
             let coverImage=req.file?.filename ? req.file?.filename : recipe.coverImage
-            await Recipes.findByIdAndUpdate(req.params.id,{...req.body,coverImage},{new:true})
+            await Recipes.findByIdAndUpdate(req.params.id,{...req.body,coverImage:req.file.filename},{new:true})
             res.json({title,ingredients,instructions,time})
         }
     }

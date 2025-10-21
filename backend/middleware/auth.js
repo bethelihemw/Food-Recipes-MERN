@@ -11,9 +11,9 @@ const verifyToken = async(req,res,next) =>{
             }else{
                 console.log(decoded)
                 req.user = decoded
+                next()
             }
         })
-        next()
     }
     else{
         return res.status(400).json({message: "invalid token"})

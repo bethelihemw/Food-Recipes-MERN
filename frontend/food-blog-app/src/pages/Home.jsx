@@ -6,13 +6,13 @@ import Recipeitems from '../components/Recipeitems';
 import{ useNavigate} from 'react-router-dom'
 import Modal from '../components/Modal'
 import InputForm from '../components/inputForm';
-// import { useLoaderData } from 'react-router-dom';
+import { useLoaderData } from 'react-router-dom';
 
 export default function Home(){
   const navigate = useNavigate()
  const [isOpen, setIsOpen] = useState(false)
-// const recipes = useLoaderData();
-
+// const recipes = <useLo />
+    const recipes = useLoaderData();
     const addRecipe = () => {
         let token = localStorage.getItem("token")
         if (token)
@@ -47,7 +47,7 @@ export default function Home(){
       {(isOpen) && <Modal onClose={()=> setIsOpen(false)}> <InputForm setIsOpen ={ ()=> setIsOpen(false)} /> </Modal>}
       
       <div className='recipe'>
-        <Recipeitems />
+        <Recipeitems  recipes={recipes} />
       </div>
     </>
 )}
