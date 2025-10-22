@@ -1,23 +1,41 @@
-import React from 'react';
-import { useLocation } from 'react-router-dom';
+import React ,{useEffect, useState}from 'react';
+import { useLocation ,useLoaderData} from 'react-router-dom';
 import burger from '../assets/burger.jpg'
 import { FaClock, FaRegHeart , FaEdit , FaTrash } from "react-icons/fa";
 import {Link} from 'react-router-dom'
 import EditRecipe from '../pages/EditRecipe';
+import axios from 'axios';
 
 
-export default function Recipeitems({ recipes = [] }){
+export default function Recipeitems(){
     
-    const allRecipes = recipes
+   let favItems= JSON.parse(localStorage.getItem("fav")) ?? []
+    const recipes = useLoaderData();
+    const [allRecipes, setAllRecipes]= useState()
+    const [isFavRecipe, setIsFavRecipe]= useState(false)
     console.log(allRecipes)
-    
-    if (recipes.length === 0) {
-       return <p>No recipes found.</p>;
-    } 
+    useEffect(()=>{
+        setAllRecipes(recipes)
+
+    }, [recipes])
+
 
     const isMyRecipesPage = location.pathname === '/myRecipe';
 
-    
+    const onDelete=async(id)=>{
+        await axios.delete(`http://localhost:5000/recipe/${id}`).then((res)=>console.log(res))
+        setAllRecipes(recipes=>recipes.filter(recipe=>recipe._id !==id))
+        let filterItem = favItems.filter(recipe => recipe._id !== id)
+        localStorage.setItem("fav",JSON.stringify(filterItem))
+    }
+
+    const favRecipe = (item)=>{
+        let filterItem = favItems.filter(recipe => recipe._id !== item._id)
+        favItems = favItems.filter(recipe => recipe._id !== item.id).length=== 0 ? [...favItems,item] : filterItem
+        localStorage.setItem("fav",JSON.stringify(favItems))
+        setIsFavRecipe(pre=>!pre)
+    }
+
     return(
         
         <div className='card-container'>
@@ -34,20 +52,18 @@ export default function Recipeitems({ recipes = [] }){
                              {isMyRecipesPage ? (
                                 <>
                                 <Link to  = {`/editRecipe/${item._id}`} className="editIcon">
-                                    <FaEdit size={22} color="#4CAF50" className="edit-icon"
-                                        
-                                        
+                                    <FaEdit size={22} color="#4CAF50" className="edit-icon"   
                                     />
                                 </Link>
 
                                 
                                 <FaTrash size={22} color="#f44336" className="delete-icon"
-                                    // onClick={() => handleDelete(item._id)}
+                                    onClick={() => onDelete(item._id)}
                                     style={{ cursor: 'pointer', marginLeft: '10px' }}
                                 />
                                 </>
                             ) : (
-                                <FaRegHeart size={24} color="gray" className="favourite" style={{ cursor: 'pointer' }}
+                                <FaRegHeart size={24} className="favourite"  onClick={()=>favRecipe(item)}  style={{ color : (favItems.some(res => res._id === item._id)) ? "red " : "" }}
                                 />
                             )}
                         </div>
@@ -70,3 +86,14 @@ export default function Recipeitems({ recipes = [] }){
                             */}
 
                                 // let path=window.location.pathname==="/myRecipe" ? true: false  
+
+
+
+                                 // const allRecipes = recipes
+    // console.log(allRecipes)
+    
+    // if (recipes.length === 0) {
+    //    return <p>No recipes found.</p>;
+    // } 
+
+    // { recipes = [] }
