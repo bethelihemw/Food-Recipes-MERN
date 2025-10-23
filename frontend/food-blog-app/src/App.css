@@ -7,6 +7,33 @@
   font-family: "Poppins", sans-serif;
 }
 
+/* Theme variables */
+:root{
+  --green-50: #e9f8ef;
+  --green-100: #c9f0db;
+  --green-200: #a0e4c2;
+  --green-300: #6fd6a4;
+  --green-400: #40c786;
+  --green-500: #22b66e; /* primary */
+  --green-600: #199b5d;
+  --green-700: #157e4e; /* hover */
+  --green-800: #0f6040;
+  --green-900: #0b4a32;
+  --text-dark: #0f1a14;
+  --text: #1f2d25;
+  --muted: #6b7f74;
+  --surface: #ffffff;
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.08);
+  --shadow-md: 0 8px 20px rgba(16, 185, 129, 0.18);
+  --shadow-lg: 0 18px 35px rgba(16, 185, 129, 0.22);
+}
+
+/* Subtle fade and rise for entry */
+@keyframes fadeInUp{
+  from{opacity:0; transform: translateY(10px)}
+  to{opacity:1; transform: translateY(0)}
+}
+
 header {
   width: 100vw;
   display: flex;
@@ -33,14 +60,16 @@ header ul li{
 }
 
 li a{
-  color: black;
-  transition: all 0.3s;
+  color: var(--text);
+  transition: all 0.25s ease;
   padding:2px 10px;
   border-radius: 10px;
 }
 
 li a:hover{
-  color:black;
+  color: #ffffff;
+  background-color: var(--green-600);
+  box-shadow: var(--shadow-sm);
 }
 
 li .login{
@@ -72,15 +101,18 @@ section{
 .home button{
   color: white;
   border:none;
-  background-color: #213547;
+  background-color: var(--green-600);
   width: 200px;
   padding: 0.5rem;
   border-radius: 0;
+  transition: background-color 0.25s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .home a:hover{
   color: white;
-  background-color: #2c4860;
+  background-color: var(--green-700);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
 }
 
 .home .left h5{
@@ -96,19 +128,28 @@ section{
   width: 80%;
   margin: auto;
   display: grid;
-  gap:2.5rem;
-  grid-template-columns: repeat(auto-fit,13rem);
+  gap:2rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   cursor:pointer
 }
 
 .card{
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  box-shadow: var(--shadow-sm);
   text-align: center;
-  border-radius: 5px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--surface);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  animation: fadeInUp 0.5s ease both;
+}
+
+.card:hover{
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
 }
 
 .card-body{
-  background-color: #d4f6e8;
+  background-color: var(--green-50);
   padding: 1rem;
 }
 
@@ -183,7 +224,7 @@ section{
 }
 
 .form-header{
-  background-color: #d4f6e8;
+  background-color: var(--green-100);
   height: 3px;
   text-align: center;
 }
@@ -213,9 +254,11 @@ section{
 .form button{
   margin:2rem 0;
   border:none;
-  background-color: #d4f6e8;
+  background-color: var(--green-500);
   font-size: 14px;
   box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
+  color: #ffffff;
+  transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 .form p{
@@ -252,7 +295,7 @@ section{
   width:100vw;
   height: 30px;
   color: white;
-  background-color: #213547;
+  background-color: var(--green-700);
   position: fixed;
   bottom: 0;
   text-align: center;
@@ -286,5 +329,80 @@ section{
 
 .active{
   color:black !important;
-  background-color: #d4f6e8;
+  background-color: var(--green-100);
+}
+
+/* Navigation underline animation */
+header ul li a{
+  position: relative;
+}
+header ul li a::after{
+  content: "";
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: -6px;
+  height: 2px;
+  background: var(--green-500);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.25s ease;
+}
+header ul li a:hover::after,
+header ul li a.active::after{
+  transform: scaleX(1);
+}
+
+/* Responsive layouts */
+@media (max-width: 992px){
+  header ul{
+    width: 60%;
+  }
+  .home{
+    gap: 4rem;
+  }
+  .card-container{
+    width: 90%;
+    gap: 1.5rem;
+  }
+  .modal{
+    left: 20%;
+    width: 60%;
+  }
+  .outer-container{
+    width: 85%;
+  }
+  .outer-container .recipe-details{
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 600px){
+  header ul{
+    width: 80%;
+  }
+  section{
+    width: 94%;
+  }
+  .home{
+    flex-direction: column;
+    gap: 2rem;
+    margin-top: 7rem;
+  }
+  .card-container{
+    width: 100%;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+  }
+  .modal{
+    left: 5%;
+    width: 90%;
+    top: 22%;
+  }
+  .form{
+    width: 95%;
+  }
+  .form-control{
+    flex-direction: column;
+  }
 }
