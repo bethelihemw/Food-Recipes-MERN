@@ -9,7 +9,12 @@ import axios from 'axios';
 
 export default function Recipeitems(){
     
-   let favItems= JSON.parse(localStorage.getItem("fav")) ?? []
+    const user = JSON.parse(localStorage.getItem("user"));
+    const favKey = `fav_${user?._id || 'guest'}`; // unique per user
+    let favItems = JSON.parse(localStorage.getItem(favKey)) || [];
+
+    
+//    let favItems= JSON.parse(localStorage.getItem("fav")) ?? []
     const recipes = useLoaderData();
     const [allRecipes, setAllRecipes]= useState()
     const [isFavRecipe, setIsFavRecipe]= useState(false)
@@ -29,12 +34,26 @@ export default function Recipeitems(){
         localStorage.setItem("fav",JSON.stringify(filterItem))
     }
 
-    const favRecipe = (item)=>{
-        let filterItem = favItems.filter(recipe => recipe._id !== item._id)
-        favItems = favItems.filter(recipe => recipe._id !== item.id).length=== 0 ? [...favItems,item] : filterItem
-        localStorage.setItem("fav",JSON.stringify(favItems))
-        setIsFavRecipe(pre=>!pre)
+    // const favRecipe = (item)=>{
+    //     let filterItem = favItems.filter(recipe => recipe._id !== item._id)
+    //     favItems = favItems.filter(recipe => recipe._id !== item.id).length=== 0 ? [...favItems,item] : filterItem
+    //     localStorage.setItem("fav",JSON.stringify(favItems))
+    //     setIsFavRecipe(pre=>!pre)
+    // }
+
+    const favRecipe = (item) => {
+    
+        const alreadyFav = favItems.some(recipe => recipe._id === item._id);
+
+    if (alreadyFav) {
+        favItems = favItems.filter(recipe => recipe._id !== item._id);
+    } else {
+        favItems = [...favItems, item];
     }
+
+    localStorage.setItem(favKey, JSON.stringify(favItems));
+    setIsFavRecipe(prev => !prev);
+    };
 
     return(
         

@@ -26,16 +26,21 @@ const getMyRecipes=async()=>{
 
 }
 
-const getFavRecipes=()=>{
-  return JSON.parse(localStorage.getItem("fav"))
-}
+// const getFavRecipes=()=>{
+//   return JSON.parse(localStorage.getItem("fav"))
+// }
+const getFavRecipes = () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const favKey = `fav_${user?._id || 'guest'}`;
+  return JSON.parse(localStorage.getItem(favKey)) || [];
+};
 
 
 const router = createBrowserRouter([
   {path:"/", element:<MainNavigation/>, children:
     [{path:"/", element: <Home/>, loader: getAllRecipes},
       {path:"/myRecipe",element:<Home/>,loader:getMyRecipes},
-      {path:"/favRecipe", element:<Home/>, loader:getFavRecipes},
+    {path:"/favRecipe", element:<Home/>, loader:getFavRecipes},
       { path: "/addRecipe", element: <AddRecipe /> },
       { path: "/EditRecipe/:id", element: <EditRecipe /> }
     ]},])
