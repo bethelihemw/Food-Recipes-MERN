@@ -8,6 +8,7 @@ import axios from 'axios';
 import Recipeitems  from './components/Recipeitems';
 import {useLoaderData} from 'react-router-dom';
 import EditRecipe from './pages/EditRecipe';
+import RecipeDetail from "./pages/DetailDescription";
 
 const getAllRecipes = async()=> {
   let allRecipes = []
@@ -42,7 +43,8 @@ const router = createBrowserRouter([
       {path:"/myRecipe",element:<Home/>,loader:getMyRecipes},
     {path:"/favRecipe", element:<Home/>, loader:getFavRecipes},
       { path: "/addRecipe", element: <AddRecipe /> },
-      { path: "/EditRecipe/:id", element: <EditRecipe /> }
+      { path: "/EditRecipe/:id", element: <EditRecipe /> },
+      {path: "/recipe/:id",element: <RecipeDetail />}
     ]},])
 
 

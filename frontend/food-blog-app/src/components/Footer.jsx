@@ -5,7 +5,7 @@ export default function Footer(){
     return(
         <>
         <div className="footer">
-            <p> @copyright not allowed</p>
+            <p> 🍽️ TasteBud Recipes - Discover, Cook, Share! © 2024 - Happy Cooking! 👨‍🍳👩‍🍳</p>
         </div>
         </>
     )
