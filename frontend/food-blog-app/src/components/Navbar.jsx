@@ -10,6 +10,7 @@ export default function Navbar(){
   let token = localStorage.getItem("token")
   const [isLogin , setIsLogin] = useState(token ? false : true)
   let user = JSON.parse(localStorage.getItem("user"))
+  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(()=>{
     setIsLogin(token ? false: true)
@@ -33,8 +34,18 @@ export default function Navbar(){
     <> 
        <header>
         
-        <h2>🍜 TasteBud Recipes</h2>
-        <ul>
+        <h2>Recipes Palace</h2>
+        <button
+          className={"menu-toggle" + (menuOpen ? " open" : "")}
+          aria-label="Toggle navigation"
+          onClick={()=> setMenuOpen(prev=> !prev)}
+        >
+          <span className="bar"></span>
+          <span className="bar"></span>
+          <span className="bar"></span>
+        </button>
+        <ul className={"nav-links" + (menuOpen ? " open" : "")}
+            onClick={()=> setMenuOpen(false)}>
             <li> <NavLink to='/'>  Home</NavLink></li>
             <li onClick={()=> isLogin && setIsOpen(true)}> <NavLink to={!isLogin ? '/myRecipe' : "/"}>  My Recipe</NavLink></li>
             <li onClick={()=> isLogin && setIsOpen(true)}> <NavLink to={!isLogin ? '/favRecipe': "/"}>  Favourtes </NavLink></li>

@@ -58,9 +58,21 @@ export default function Recipeitems(){
     setIsFavRecipe(prev => !prev);
     };
 
-    return(
+    // Determine page title based on location
+    const getPageTitle = () => {
+        if (location.pathname === '/myRecipe') {
+            return 'My Recipes';
+        } else if (location.pathname === '/favRecipe') {
+            return 'My Favourite Recipes';
+        } else {
+            return 'Recipes';
+        }
+    };
 
-        <div className='card-container'>
+    return(
+        <>
+            <h2 className='recipe-page-title'>{getPageTitle()}</h2>
+            <div className='card-container'>
             
             {allRecipes?.map((item,index) => {
                 return ( 
@@ -72,7 +84,7 @@ export default function Recipeitems(){
                     <div className='card-body'>
                         <div className='title'>{item.title}</div>
                         <div className = "icons">
-                            <FaClock size={20} color="#111111ff" className='timer' />
+                            <FaClock size={26} color="#ffffff" className='timer-icon' />
                             <span className="time-text">{item.time}</span>
                             
                              {isMyRecipesPage ? (
@@ -92,7 +104,7 @@ export default function Recipeitems(){
                                 />
                                 </>
                             ) : (
-                                <FaRegHeart size={24} className="favourite"  onClick={(e) => {
+                                <FaRegHeart size={28} className="favourite"  onClick={(e) => {
                                     e.stopPropagation();
                                     favRecipe(item);
                                 }}  style={{ color : (favItems.some(res => res._id === item._id)) ? "red " : "" }}
@@ -106,7 +118,7 @@ export default function Recipeitems(){
             
      })}
         </div>
-        
+        </>
     )
 }
 
